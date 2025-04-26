@@ -6,10 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
@@ -21,23 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJdbcTest
 @Testcontainers
 @Import(ProductRepository.class)
-public class ProductRepositoryIntegrationTest {
+public class ProductRepositoryIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     private ProductRepository productRepository;
-
-    @Container
-    @SuppressWarnings("resource")
-    private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:13-alpine")
-            .withDatabaseName("test_assignment")
-            .withUsername("test_user")
-            .withPassword("test_password");
-
-    @DynamicPropertySource
-    static void overrideProps(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-    }
 
     @Test
     void givenValidProduct_whenSave_thenFindByCodeReturnsProduct() {
@@ -47,12 +29,15 @@ public class ProductRepositoryIntegrationTest {
                 new BigDecimal("110.00"),
                 true);
 
-        productRepository.save(product);
-
+        var savedId = productRepository.save(product);
         var result = productRepository.findByCode(product.getCode());
 
-        assertThat(result).isPresent().hasValueSatisfying(
-                value -> assertProductsEqual(value, product)
+        assertThat(result)
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                    assertProductsEqual(value, product);
+                    assertThat(value.getId()).isEqualTo(savedId);
+                }
         );
     }
 
@@ -64,8 +49,8 @@ public class ProductRepositoryIntegrationTest {
                 new BigDecimal("110.00"),
                 true);
 
-        var saved = productRepository.save(product);
-        var result = productRepository.findById(saved);
+        var savedId = productRepository.save(product);
+        var result = productRepository.findById(savedId);
 
         assertThat(result)
                 .isPresent()

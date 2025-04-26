@@ -11,8 +11,8 @@ public class Product {
     private final BigDecimal priceUsd;
     private final boolean isAvailable;
 
-    public Product(String code, String name, BigDecimal priceEur, boolean isAvailable) {
-        this(null, code, name, priceEur, null, isAvailable);
+    public Product(String code, String name, BigDecimal priceEur, BigDecimal priceUsd, boolean isAvailable) {
+        this(null, code, name, priceEur, priceUsd, isAvailable);
     }
 
     public Product(UUID id, String code, String name, BigDecimal priceEur,
@@ -54,6 +54,7 @@ public class Product {
                 dto.code(),
                 dto.name(),
                 dto.priceEur(),
+                BigDecimal.ZERO,
                 dto.isAvailable()
         );
     }
