@@ -52,12 +52,12 @@ public class Product {
         return isAvailable;
     }
 
-    public static Product fromRequest(ProductRequest dto) {
+    public static Product fromRequest(ProductRequest dto, BigDecimal priceUsd) {
         return new Product(
                 dto.code(),
                 dto.name(),
                 dto.priceEur(),
-                BigDecimal.ZERO,
+                priceUsd,
                 dto.isAvailable()
         );
     }

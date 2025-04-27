@@ -6,6 +6,7 @@ import com.ingemark.testassignment.product.exception.DuplicateCodeException;
 import com.ingemark.testassignment.product.exception.ProductNotFoundException;
 import com.ingemark.testassignment.product.model.Product;
 import com.ingemark.testassignment.product.repository.ProductRepository;
+import com.ingemark.testassignment.product.service.CurrencyService;
 import com.ingemark.testassignment.product.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +28,8 @@ import static org.mockito.Mockito.*;
 class ProductServiceTest {
     @Mock
     private ProductRepository productRepository;
+    @Mock
+    private CurrencyService currencyService;
     @InjectMocks
     private ProductService productService;
 
@@ -49,6 +52,7 @@ class ProductServiceTest {
         );
 
         when(productRepository.findByCode(request.code())).thenReturn(Optional.empty());
+        when(currencyService.getEurToUsdRate()).thenReturn(BigDecimal.valueOf(1.1));
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
         productService.createProduct(request);

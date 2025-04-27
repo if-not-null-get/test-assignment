@@ -4,13 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ingemark.testassignment.product.AbstractIntegrationTest;
 import com.ingemark.testassignment.product.dto.ProductRequest;
 import com.ingemark.testassignment.product.dto.ProductResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -30,15 +28,8 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
     
     private static final String BASE_URL = "/products";
-
-    @BeforeEach
-    void cleanUp() {
-        jdbcTemplate.execute("DELETE FROM products");
-    }
 
     @Test
     void givenValidRequest_whenCreateProduct_thenReturnsProduct() throws Exception {

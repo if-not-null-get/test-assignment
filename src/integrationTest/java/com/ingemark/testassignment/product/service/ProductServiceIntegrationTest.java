@@ -3,22 +3,32 @@ package com.ingemark.testassignment.product.service;
 import com.ingemark.testassignment.product.AbstractIntegrationTest;
 import com.ingemark.testassignment.product.dto.ProductRequest;
 import com.ingemark.testassignment.product.dto.ProductResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @Testcontainers
 public class ProductServiceIntegrationTest extends AbstractIntegrationTest {
+    @MockitoBean
+    private CurrencyService currencyService;
 
     @Autowired
     private ProductService productService;
+
+    @BeforeEach
+    public void setUp() {
+        when(currencyService.getEurToUsdRate()).thenReturn(BigDecimal.valueOf(1.1));
+    }
 
     @Test
     void givenValidRequest_whenCreateProduct_thenProductIsCreated() {

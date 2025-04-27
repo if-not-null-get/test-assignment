@@ -8,15 +8,19 @@ import com.ingemark.testassignment.product.exception.ProductNotFoundException;
 import com.ingemark.testassignment.product.model.Product;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class ProductService {
-    private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    private final ProductRepository productRepository;
+    private final CurrencyService currencyService;
+
+    public ProductService(ProductRepository productRepository, CurrencyService currencyService) {
         this.productRepository = productRepository;
+        this.currencyService = currencyService;
     }
 
     public ProductResponse createProduct(ProductRequest request) {
@@ -24,7 +28,9 @@ public class ProductService {
             throw new DuplicateCodeException(request.code());
         }
 
-        var product = Product.fromRequest(request);
+        BigDecimal eurToUsdRate = currencyService.getEurToUsdRate();
+
+        var product = Product.fromRequest(request, request.priceEur().multiply(eurToUsdRate));
         var savedProduct = productRepository.save(product);
 
         return savedProduct.toResponse();
