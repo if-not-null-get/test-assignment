@@ -1,5 +1,7 @@
 package com.ingemark.testassignment.product;
 
+import com.ingemark.testassignment.product.exception.DuplicateCodeException;
+import com.ingemark.testassignment.product.exception.ProductNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +17,10 @@ public class ProductService {
 
     public ProductResponse createProduct(ProductRequest request) {
         var product = Product.fromRequest(request);
+
+        if (productRepository.findByCode(request.code()).isPresent()) {
+            throw new DuplicateCodeException(request.code());
+        }
 
         UUID savedProductId = productRepository.save(product);
         var savedProduct = productRepository.findById(savedProductId)

@@ -1,5 +1,7 @@
 package com.ingemark.testassignment.product;
 
+import com.ingemark.testassignment.product.exception.DuplicateCodeException;
+import com.ingemark.testassignment.product.exception.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,6 +14,13 @@ public class ProductExceptionHandler {
     public ResponseEntity<String> handleProductNotFound(ProductNotFoundException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateCodeException.class)
+    public ResponseEntity<String> handleDataIntegrityViolation(DuplicateCodeException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(ex.getMessage());
     }
 }
