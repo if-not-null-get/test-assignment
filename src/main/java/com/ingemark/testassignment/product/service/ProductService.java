@@ -1,7 +1,11 @@
-package com.ingemark.testassignment.product;
+package com.ingemark.testassignment.product.service;
 
+import com.ingemark.testassignment.product.repository.ProductRepository;
+import com.ingemark.testassignment.product.dto.ProductRequest;
+import com.ingemark.testassignment.product.dto.ProductResponse;
 import com.ingemark.testassignment.product.exception.DuplicateCodeException;
 import com.ingemark.testassignment.product.exception.ProductNotFoundException;
+import com.ingemark.testassignment.product.model.Product;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,15 +20,12 @@ public class ProductService {
     }
 
     public ProductResponse createProduct(ProductRequest request) {
-        var product = Product.fromRequest(request);
-
         if (productRepository.findByCode(request.code()).isPresent()) {
             throw new DuplicateCodeException(request.code());
         }
 
-        UUID savedProductId = productRepository.save(product);
-        var savedProduct = productRepository.findById(savedProductId)
-                .orElseThrow(() -> new ProductNotFoundException(savedProductId));
+        var product = Product.fromRequest(request);
+        var savedProduct = productRepository.save(product);
 
         return savedProduct.toResponse();
     }

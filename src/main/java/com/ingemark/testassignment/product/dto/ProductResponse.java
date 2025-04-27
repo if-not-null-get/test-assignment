@@ -1,4 +1,4 @@
-package com.ingemark.testassignment.product;
+package com.ingemark.testassignment.product.dto;
 
 import java.math.BigDecimal;
 import java.util.UUID;

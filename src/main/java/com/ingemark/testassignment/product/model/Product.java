@@ -1,4 +1,7 @@
-package com.ingemark.testassignment.product;
+package com.ingemark.testassignment.product.model;
+
+import com.ingemark.testassignment.product.dto.ProductRequest;
+import com.ingemark.testassignment.product.dto.ProductResponse;
 
 import java.math.BigDecimal;
 import java.util.UUID;

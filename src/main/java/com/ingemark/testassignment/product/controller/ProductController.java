@@ -1,5 +1,8 @@
-package com.ingemark.testassignment.product;
+package com.ingemark.testassignment.product.controller;
 
+import com.ingemark.testassignment.product.service.ProductService;
+import com.ingemark.testassignment.product.dto.ProductRequest;
+import com.ingemark.testassignment.product.dto.ProductResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

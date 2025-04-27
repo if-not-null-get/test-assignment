@@ -1,4 +1,4 @@
-package com.ingemark.testassignment;
+package com.ingemark.testassignment.product;
 
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;

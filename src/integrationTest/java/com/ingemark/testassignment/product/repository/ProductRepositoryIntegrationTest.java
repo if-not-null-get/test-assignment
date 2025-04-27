@@ -1,7 +1,7 @@
-package com.ingemark.testassignment;
+package com.ingemark.testassignment.product.repository;
 
-import com.ingemark.testassignment.product.Product;
-import com.ingemark.testassignment.product.ProductRepository;
+import com.ingemark.testassignment.product.AbstractIntegrationTest;
+import com.ingemark.testassignment.product.model.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
@@ -29,14 +29,14 @@ public class ProductRepositoryIntegrationTest extends AbstractIntegrationTest {
                 new BigDecimal("110.00"),
                 true);
 
-        var savedId = productRepository.save(product);
+        var savedProduct = productRepository.save(product);
         var result = productRepository.findByCode(product.getCode());
 
         assertThat(result)
                 .isPresent()
                 .hasValueSatisfying(value -> {
                     assertProductsEqual(value, product);
-                    assertThat(value.getId()).isEqualTo(savedId);
+                    assertThat(value.getId()).isEqualTo(savedProduct.getId());
                 }
         );
     }
@@ -49,8 +49,8 @@ public class ProductRepositoryIntegrationTest extends AbstractIntegrationTest {
                 new BigDecimal("110.00"),
                 true);
 
-        var savedId = productRepository.save(product);
-        var result = productRepository.findById(savedId);
+        var savedProduct = productRepository.save(product);
+        var result = productRepository.findById(savedProduct.getId());
 
         assertThat(result)
                 .isPresent()

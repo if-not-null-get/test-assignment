@@ -1,5 +1,6 @@
-package com.ingemark.testassignment.product;
+package com.ingemark.testassignment.product.repository;
 
+import com.ingemark.testassignment.product.model.Product;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -12,7 +13,7 @@ import java.util.UUID;
 public class ProductRepository {
     private final JdbcTemplate jdbc;
 
-    private static final String SAVE = "INSERT INTO products (code, name, price_eur, price_usd, is_available) VALUES (?, ?, ?, ?, ?) RETURNING id";
+    private static final String SAVE = "INSERT INTO products (code, name, price_eur, price_usd, is_available) VALUES (?, ?, ?, ?, ?) RETURNING id, code, name, price_eur, price_usd, is_available";
     private static final String GET_BY_ID = "SELECT * FROM products WHERE id = ?";
     private static final String GET_ALL = "SELECT * FROM products";
     private static final String GET_BY_CODE = "SELECT * FROM products WHERE code = ?";
@@ -21,8 +22,13 @@ public class ProductRepository {
         this.jdbc = template;
     }
 
-    public UUID save(Product product) {
-        return jdbc.queryForObject(SAVE, (rs, rowNum) -> rs.getObject("id", UUID.class), product.getCode(), product.getName(), product.getPriceEur(), product.getPriceUsd(), product.isAvailable());
+    public Product save(Product product) {
+        return jdbc.queryForObject(SAVE, rowMapper(),
+                product.getCode(),
+                product.getName(),
+                product.getPriceEur(),
+                product.getPriceUsd(),
+                product.isAvailable());
     }
 
     public Optional<Product> findById(UUID id) {

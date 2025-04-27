@@ -1,4 +1,4 @@
-package com.ingemark.testassignment.product;
+package com.ingemark.testassignment.product.dto;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;

@@ -1,8 +1,9 @@
-package com.ingemark.testassignment;
+package com.ingemark.testassignment.product.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ingemark.testassignment.product.ProductRequest;
-import com.ingemark.testassignment.product.ProductResponse;
+import com.ingemark.testassignment.product.AbstractIntegrationTest;
+import com.ingemark.testassignment.product.dto.ProductRequest;
+import com.ingemark.testassignment.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Testcontainers
 public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
-
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -36,7 +36,7 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     private static final String BASE_URL = "/products";
 
     @BeforeEach
-    void cleanDatabase() {
+    void cleanUp() {
         jdbcTemplate.execute("DELETE FROM products");
     }
 

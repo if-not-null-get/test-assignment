@@ -1,8 +1,8 @@
-package com.ingemark.testassignment;
+package com.ingemark.testassignment.product.service;
 
-import com.ingemark.testassignment.product.ProductRequest;
-import com.ingemark.testassignment.product.ProductResponse;
-import com.ingemark.testassignment.product.ProductService;
+import com.ingemark.testassignment.product.AbstractIntegrationTest;
+import com.ingemark.testassignment.product.dto.ProductRequest;
+import com.ingemark.testassignment.product.dto.ProductResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
