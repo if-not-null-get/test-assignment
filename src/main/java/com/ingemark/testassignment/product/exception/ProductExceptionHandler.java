@@ -21,4 +21,11 @@ public class ProductExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ex.getMessage());
     }
+
+    @ExceptionHandler(CurrencyServiceException.class)
+    public ResponseEntity<String> handleCurrencyServiceException(CurrencyServiceException ex) {
+        return ResponseEntity
+                .status(ex.getStatus())
+                .body(ex.getMessage());
+    }
 }

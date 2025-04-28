@@ -4,17 +4,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ingemark.testassignment.product.AbstractIntegrationTest;
 import com.ingemark.testassignment.product.dto.ProductRequest;
 import com.ingemark.testassignment.product.dto.ProductResponse;
+import com.ingemark.testassignment.product.service.CurrencyService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -23,14 +29,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
+@TestPropertySource(properties = {
+        "currency.api.scheme=https",
+        "currency.api.host=fake-bank.test",
+        "currency.api.path=/some-path",
+        "currency.api.default-currency=USD"
+})
 public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    
-    private static final String BASE_URL = "/products";
 
+    @MockitoBean
+    private CurrencyService currencyService;
+    
+    private static final String BASE_URL = "/api/v1/products";
+
+    @BeforeEach
+    void setUp() {
+        when(currencyService.getEurToUsdRate()).thenReturn(BigDecimal.valueOf(1.1));
+    }
     @Test
     void givenValidRequest_whenCreateProduct_thenReturnsProduct() throws Exception {
         var request = new ProductRequest(
@@ -140,7 +159,7 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void givenNonExistingId_whenGetProduct_thenNotFoundReturned() throws Exception {
-        mockMvc.perform(get("/products/" + UUID.randomUUID()))
+        mockMvc.perform(get(BASE_URL + "/" + UUID.randomUUID()))
                 .andExpect(status().isNotFound());
     }
 

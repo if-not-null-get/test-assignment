@@ -1,4 +1,4 @@
-package com.ingemark.testassignment.product;
+package com.ingemark.testassignment.product.service;
 
 import com.ingemark.testassignment.product.dto.ProductRequest;
 import com.ingemark.testassignment.product.dto.ProductResponse;
@@ -6,8 +6,6 @@ import com.ingemark.testassignment.product.exception.DuplicateCodeException;
 import com.ingemark.testassignment.product.exception.ProductNotFoundException;
 import com.ingemark.testassignment.product.model.Product;
 import com.ingemark.testassignment.product.repository.ProductRepository;
-import com.ingemark.testassignment.product.service.CurrencyService;
-import com.ingemark.testassignment.product.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
