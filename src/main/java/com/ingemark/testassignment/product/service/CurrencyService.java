@@ -3,6 +3,8 @@ package com.ingemark.testassignment.product.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ingemark.testassignment.product.exception.CurrencyServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ public class CurrencyService {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private static final Logger log = LoggerFactory.getLogger(CurrencyService.class);
 
     public CurrencyService(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
@@ -40,6 +43,7 @@ public class CurrencyService {
     }
 
     public BigDecimal getEurToUsdRate() {
+        log.info("Fetching EUR to USD exchange rate from HNB API");
         try {
             URI url = UriComponentsBuilder.newInstance()
                     .scheme(scheme)
@@ -54,22 +58,24 @@ public class CurrencyService {
             JsonNode jsonNode = objectMapper.readTree(response);
 
             if (jsonNode.isArray() && !jsonNode.isEmpty()) {
-                String rateString = jsonNode.get(0).get(FIELD_NAME_RATE).asText();
-                rateString = rateString.replace(",", ".");
+                String rate = jsonNode.get(0).get(FIELD_NAME_RATE).asText();
+                rate = rate.replace(",", ".");
 
-                return new BigDecimal(rateString);
+                log.info("Successfully fetched exchange rate: {}", rate);
+                return new BigDecimal(rate);
             } else {
-                throw new CurrencyServiceException("Invalid response from HNB API: empty or wrong format",
-                        HttpStatus.BAD_GATEWAY);
+                String errorMessage = "Invalid response from HNB API: empty or wrong format";
+                log.error(errorMessage);
+                throw new CurrencyServiceException(errorMessage, HttpStatus.BAD_GATEWAY);
             }
         } catch (HttpClientErrorException | HttpServerErrorException e) {
-            throw new CurrencyServiceException("Failed to reach HNB API: " + e.getMessage(), e, HttpStatus.SERVICE_UNAVAILABLE);
+            String errorMessage = "Failed to reach HNB API: " + e.getMessage();
+            log.error(errorMessage, e);
+            throw new CurrencyServiceException(errorMessage, e, HttpStatus.SERVICE_UNAVAILABLE);
         } catch (Exception e) {
-            throw new CurrencyServiceException(
-                    "Unexpected error during currency conversion: " + e.getMessage(),
-                    e,
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            );
+            String errorMessage = "Unexpected error during currency conversion: " + e.getMessage();
+            log.error(errorMessage, e);
+            throw new CurrencyServiceException(errorMessage, e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

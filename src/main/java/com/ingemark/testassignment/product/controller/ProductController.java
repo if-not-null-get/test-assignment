@@ -4,6 +4,8 @@ import com.ingemark.testassignment.product.service.ProductService;
 import com.ingemark.testassignment.product.dto.ProductRequest;
 import com.ingemark.testassignment.product.dto.ProductResponse;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import java.util.UUID;
 @Validated
 public class ProductController {
     private final ProductService productService;
+    private static final Logger log = LoggerFactory.getLogger(ProductController.class);
 
     public ProductController(ProductService productService) {
         this.productService = productService;

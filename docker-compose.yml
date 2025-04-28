@@ -13,6 +13,11 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test_user -d test_assignment"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   app:
     build:
@@ -25,7 +30,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/test_assignment
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/test_assignment
       SPRING_DATASOURCE_USERNAME: test_user
       SPRING_DATASOURCE_PASSWORD: test_password
 

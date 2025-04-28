@@ -6,6 +6,8 @@ import com.ingemark.testassignment.product.dto.ProductResponse;
 import com.ingemark.testassignment.product.exception.DuplicateCodeException;
 import com.ingemark.testassignment.product.exception.ProductNotFoundException;
 import com.ingemark.testassignment.product.model.Product;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -17,6 +19,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final CurrencyService currencyService;
+    private static final Logger log = LoggerFactory.getLogger(ProductService.class);
 
     public ProductService(ProductRepository productRepository, CurrencyService currencyService) {
         this.productRepository = productRepository;
@@ -32,11 +35,13 @@ public class ProductService {
 
         var product = Product.fromRequest(request, request.priceEur().multiply(eurToUsdRate));
         var savedProduct = productRepository.save(product);
+        log.info("Created new product with code: {}", request.code());
 
         return savedProduct.toResponse();
     }
 
     public ProductResponse getProductById(UUID id) {
+        log.info("Fetching product with id: {}", id);
         var product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
 
