@@ -2,8 +2,8 @@
 
 API for managing Products. Built with:
 - Java 17
-- Gradle
-- Spring Boot
+- Gradle 8
+- Spring Boot 3
 - Spring MVC for REST API design with versioned endpoints (e.g., /api/v1/)
 - PostgreSQL in a Docker container
 - Flyway migrations
@@ -24,6 +24,14 @@ API for managing Products. Built with:
 
 ## Local Setup
 
+Before running these steps, please make sure you've got Docker and Docker Compose installed on your machine:
+
+```bash
+docker --version
+docker compose version
+```
+In case they're not installed, please adhere to the official guide https://docs.docker.com/get-docker/
+
 1. Build the application:
 
 ```bash
@@ -32,7 +40,7 @@ API for managing Products. Built with:
 
 This will run both unit and integration tests and prepare the latest version to be run in a Docker environment
 
-2. Start both app and db with Docker Compose (make sure you got Docker and Docker Compose installed):
+2. Start both app and db with Docker Compose:
 
 ```bash
    docker-compose up --build
